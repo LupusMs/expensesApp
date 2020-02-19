@@ -1,3 +1,4 @@
+function getData() {
 let xhr = new XMLHttpRequest();
 xhr.open('GET', 'https://expenses-4c37.restdb.io/rest/february-2020');
 xhr.setRequestHeader('x-apikey', apikey);
@@ -17,4 +18,5 @@ xhr.onload = function () {
     }
 };
 xhr.send();  
+}
   
