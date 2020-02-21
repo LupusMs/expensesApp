@@ -14,7 +14,7 @@ function getData(apiKey) {
       alert(`Error ${xhr.status}: ${xhr.statusText}`);
     } else {
       var items = [];
-      items.push("<table><caption>Monthly Expenses</caption>");
+      items.push("<table class='table'>");
       items.push("<tr><th>Item</th>");
       items.push("<th>Money</th></tr>");
       var data = this.response[0];
