@@ -9,8 +9,7 @@ function obtainAPIKey() {
   return apiKey;
 }
 
-function getData(apiKey, monthYear) {
-  let url = 'https://expenses-4c37.restdb.io/rest/';
+function getMonthYearParameter(monthYear) {
   if ((monthYear === undefined) || (!monthYear.match(/([a-z])-([0-9]{4})/g))) {
     const monthNames = ['january', 'february', 'march', 'april', 'may', 'june',
       'july', 'august', 'september', 'october', 'november', 'december',
@@ -18,10 +17,14 @@ function getData(apiKey, monthYear) {
     const today = new Date();
     const year = today.getFullYear();
     const month = monthNames[today.getMonth()];
-    url += `${month}-${year}`;
-  } else {
-    url += monthYear;
+    return `${month}-${year}`;
   }
+  return monthYear;
+}
+
+function getData(apiKey, monthYear) {
+  const monthYearParameter = getMonthYearParameter(monthYear);
+  const url = `https://expenses-4c37.restdb.io/rest/${monthYearParameter}`;
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url);
   xhr.setRequestHeader('x-apikey', apiKey);
@@ -34,20 +37,22 @@ function getData(apiKey, monthYear) {
       items.push("<table class='table'>");
       items.push('<tr><th>Item</th>');
       items.push('<th>Price</th></tr>');
-      const data = this.response[0];
-      // eslint-disable-next-line no-restricted-syntax
-      for (const item in data) {
-        if (item === '_id') {
-          // eslint-disable-next-line no-continue
-          continue;
+      const data = this.response;
+      data.forEach((element) => {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const item in element) {
+          if (item === '_id') {
+            // eslint-disable-next-line no-continue
+            continue;
+          }
+          items.push(`<tr><td>${item}</td><td>${element[item]}</td></tr>`);
         }
-        items.push(`<tr><td>${item}</td><td>${data[item]}</td></tr>`);
-      }
+      });
       items.push("<tr><td><input id='newItemName' class='form-control' type='text' placeholder='New Item'></td>");
       items.push("<td><input id='newItemPrice' class='form-control' type='text' placeholder='Price'></td></tr>");
       items.push('</table>');
-      items.push("<button type='submit' class='btn btn-primary btn-lg btn-block' onclick='addItem()'>Submit</button>");
       document.getElementById('test').innerHTML = items.join('');
+      document.getElementById('submit-btn').style.visibility = 'visible';
     }
   };
 
@@ -60,12 +65,32 @@ function getData(apiKey, monthYear) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function addItem() {
-  alert(`Adding new item ${$('#newItemName').val()} with price: ${Number($('#newItemPrice').val())}`);
+function addItem(apiKey, monthYear) {
+  // eslint-disable-next-line no-restricted-globals
+  const confirmation = confirm('Add new expense');
+  if (confirmation) {
+    const url = `https://expenses-4c37.restdb.io/rest/${monthYear}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader('x-apikey', apiKey);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.responseType = 'json';
+    xhr.onload = function () {
+      if (xhr.status !== 201) {
+        alert(`Error ${xhr.status}: ${xhr.statusText}`);
+      } else {
+        getData(apiKey, monthYear);
+      }
+    };
+
+    xhr.send(`{ "${$('#newItemName').val()}" : ${Number($('#newItemPrice').val())} }`);
+  }
 }
 
 // eslint-disable-next-line no-unused-vars
 function init() {
   const apiKey = obtainAPIKey();
-  getData(apiKey);
+  const monthYear = getMonthYearParameter();
+  getData(apiKey, monthYear);
+  document.getElementById('submit-btn').onclick = function () { addItem(apiKey, monthYear); };
 }

@@ -33,3 +33,7 @@ td {
 .custom-navbar {
     background-color: #333;
 }
+
+#submit-btn {
+  visibility: hidden;
+}
