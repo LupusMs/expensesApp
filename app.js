@@ -87,10 +87,36 @@ function addItem(apiKey, monthYear) {
   }
 }
 
+function loadDropdown(apiKey) {
+  const url = 'https://expenses-4c37.restdb.io/rest/_meta';
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.setRequestHeader('x-apikey', apiKey);
+  xhr.responseType = 'json';
+  xhr.onload = function () {
+    if (xhr.status !== 200) {
+      alert(`Error ${xhr.status}: ${xhr.statusText}`);
+    } else {
+      const items = [];
+      const data = this.response.collections;
+      const ignoreItems = ['system_log', 'system_jobs', 'users', 'email_outbound', 'email_inbound', 'email_unsubscribed'];
+      data.forEach((element) => {
+        if (!ignoreItems.includes(element.name)) {
+          items.push(`<a class="dropdown-item" href="#">${element.name}</a>`);
+        }
+      });
+      document.getElementById('dropdown-menu').innerHTML = items.join('');
+    }
+  };
+  xhr.send();
+}
+
 // eslint-disable-next-line no-unused-vars
 function init() {
   const apiKey = obtainAPIKey();
   const monthYear = getMonthYearParameter();
+  loadDropdown(apiKey);
+  document.getElementById('dropdownMenuButton').innerHTML = monthYear;
   getData(apiKey, monthYear);
   document.getElementById('submit-btn').onclick = function () { addItem(apiKey, monthYear); };
 }
