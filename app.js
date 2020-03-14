@@ -9,9 +9,21 @@ function obtainAPIKey() {
   return apiKey;
 }
 
-function getData(apiKey) {
+function getData(apiKey, monthYear) {
+  let url = 'https://expenses-4c37.restdb.io/rest/';
+  if ((monthYear === undefined) || (!monthYear.match(/([a-z])-([0-9]{4})/g))) {
+    const monthNames = ['january', 'february', 'march', 'april', 'may', 'june',
+      'july', 'august', 'september', 'october', 'november', 'december',
+    ];
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = monthNames[today.getMonth()];
+    url += `${month}-${year}`;
+  } else {
+    url += monthYear;
+  }
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://expenses-4c37.restdb.io/rest/february-2020');
+  xhr.open('GET', url);
   xhr.setRequestHeader('x-apikey', apiKey);
   xhr.responseType = 'json';
   xhr.onload = function () {
