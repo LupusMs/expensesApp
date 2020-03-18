@@ -37,3 +37,9 @@ td {
 #submit-btn {
   visibility: hidden;
 }
+
+#total-expenses {
+	border: 1px solid black;
+  background-color: antiquewhite;
+  padding: 5px;
+}

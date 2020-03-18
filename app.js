@@ -38,6 +38,7 @@ function getData(apiKey, monthYear) {
       items.push('<tr><th>Item</th>');
       items.push('<th>Price</th></tr>');
       const data = this.response;
+      let totalExpenses = 0.0;
       data.forEach((element) => {
         // eslint-disable-next-line no-restricted-syntax
         for (const item in element) {
@@ -45,12 +46,15 @@ function getData(apiKey, monthYear) {
             // eslint-disable-next-line no-continue
             continue;
           }
-          items.push(`<tr><td>${item}</td><td>${element[item]}</td></tr>`);
+          const itemPrice = element[item];
+          items.push(`<tr><td>${item}</td><td>${itemPrice}</td></tr>`);
+          totalExpenses += itemPrice;
         }
       });
       items.push("<tr><td><input id='newItemName' class='form-control' type='text' placeholder='New Item'></td>");
       items.push("<td><input id='newItemPrice' class='form-control' type='text' placeholder='Price'></td></tr>");
       items.push('</table>');
+      items.unshift(`<div id="total-expenses">Total Expenses: <b>${totalExpenses}</b></div>`);
       document.getElementById('expenses-table').innerHTML = items.join('');
       document.getElementById('submit-btn').style.visibility = 'visible';
     }
