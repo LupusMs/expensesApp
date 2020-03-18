@@ -51,7 +51,7 @@ function getData(apiKey, monthYear) {
       items.push("<tr><td><input id='newItemName' class='form-control' type='text' placeholder='New Item'></td>");
       items.push("<td><input id='newItemPrice' class='form-control' type='text' placeholder='Price'></td></tr>");
       items.push('</table>');
-      document.getElementById('test').innerHTML = items.join('');
+      document.getElementById('expenses-table').innerHTML = items.join('');
       document.getElementById('submit-btn').style.visibility = 'visible';
     }
   };
