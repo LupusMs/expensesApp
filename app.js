@@ -72,7 +72,15 @@ function getData(apiKey, monthYear) {
 function addItem(apiKey, monthYear) {
   // eslint-disable-next-line no-restricted-globals
   const confirmation = confirm('Add new expense');
-  if (confirmation) {
+  const itemName = $('#newItemName').val();
+  const itemPrice = $('#newItemPrice').val();
+  if (itemName === '' || itemPrice === '') {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-danger';
+    alert.setAttribute('role', 'alert');
+    alert.innerHTML = 'Fields should not be empty!';
+    document.getElementById('expenses-table').append(alert);
+  } else if (confirmation) {
     const url = `https://expenses-4c37.restdb.io/rest/${monthYear}`;
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
