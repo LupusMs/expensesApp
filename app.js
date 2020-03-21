@@ -107,6 +107,7 @@ function addItem(apiKey, monthYear) {
     };
 
     xhr.send(`{ "${$('#newItemName').val()}" : ${Number($('#newItemPrice').val())} }`);
+    startAnimatingLoading();
   }
 }
 
