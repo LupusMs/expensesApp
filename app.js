@@ -22,11 +22,20 @@ function getMonthYearParameter(monthYear) {
   return monthYear;
 }
 
-function getData(apiKey, monthYear) {
+function startAnimatingLoading() {
   document.getElementById('spinner').style.display = 'block';
   document.getElementById('expenses-table').innerHTML = '';
   document.getElementById('submit-btn').style.visibility = 'hidden';
+}
+
+function stopAnimatingLoading() {
+  document.getElementById('submit-btn').style.visibility = 'visible';
+  document.getElementById('spinner').style.display = 'none';
+}
+
+function getData(apiKey, monthYear) {
   document.getElementById('dropdownMenuButton').innerHTML = monthYear;
+  startAnimatingLoading();
   const monthYearParameter = getMonthYearParameter(monthYear);
   const url = `https://expenses-4c37.restdb.io/rest/${monthYearParameter}`;
   const xhr = new XMLHttpRequest();
@@ -60,8 +69,7 @@ function getData(apiKey, monthYear) {
       items.push('</table>');
       items.unshift(`<div id="total-expenses">Total Expenses: <b>${totalExpenses}</b></div>`);
       document.getElementById('expenses-table').innerHTML = items.join('');
-      document.getElementById('submit-btn').style.visibility = 'visible';
-      document.getElementById('spinner').style.display = 'none';
+      stopAnimatingLoading();
     }
   };
 
