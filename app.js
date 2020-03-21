@@ -112,7 +112,7 @@ function loadDropdown(apiKey) {
       const ignoreItems = ['system_log', 'system_jobs', 'users', 'email_outbound', 'email_inbound', 'email_unsubscribed'];
       data.forEach((element) => {
         if (!ignoreItems.includes(element.name)) {
-          items.push(`<a class="dropdown-item" href="#">${element.name}</a>`);
+          items.push(`<a class="dropdown-item" href="javascript:getData('${apiKey}','${element.name}')">${element.name}</a>`);
         }
       });
       document.getElementById('dropdown-menu').innerHTML = items.join('');
