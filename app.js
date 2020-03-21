@@ -23,6 +23,10 @@ function getMonthYearParameter(monthYear) {
 }
 
 function getData(apiKey, monthYear) {
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('expenses-table').innerHTML = '';
+  document.getElementById('submit-btn').style.visibility = 'hidden';
+  document.getElementById('dropdownMenuButton').innerHTML = monthYear;
   const monthYearParameter = getMonthYearParameter(monthYear);
   const url = `https://expenses-4c37.restdb.io/rest/${monthYearParameter}`;
   const xhr = new XMLHttpRequest();
@@ -57,6 +61,7 @@ function getData(apiKey, monthYear) {
       items.unshift(`<div id="total-expenses">Total Expenses: <b>${totalExpenses}</b></div>`);
       document.getElementById('expenses-table').innerHTML = items.join('');
       document.getElementById('submit-btn').style.visibility = 'visible';
+      document.getElementById('spinner').style.display = 'none';
     }
   };
 
