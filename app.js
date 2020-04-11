@@ -33,6 +33,23 @@ function stopAnimatingLoading() {
   document.getElementById('spinner').style.display = 'none';
 }
 
+function getMonthlyLimit(apiKey) {
+  const url = 'https://expenses-4c37.restdb.io/rest/settings';
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.setRequestHeader('x-apikey', apiKey);
+  xhr.responseType = 'json';
+  xhr.onload = function () {
+    if (xhr.status !== 200) {
+      alert(`Error ${xhr.status}: ${xhr.statusText}`);
+    } else {
+      document.getElementById('monthlyLimit').value = this.response[0].monthly_limit;
+      document.getElementById('daily_allowance').innerHTML = (this.response[0].monthly_limit) / 30;
+    }
+  };
+  xhr.send();
+}
+
 function getData(apiKey, monthYear) {
   document.getElementById('dropdownMenuButton').innerHTML = monthYear;
   startAnimatingLoading();
@@ -67,10 +84,13 @@ function getData(apiKey, monthYear) {
       items.push("<tr><td><input id='newItemName' class='form-control' type='text' placeholder='New Item'></td>");
       items.push("<td><input id='newItemPrice' class='form-control' type='text' placeholder='Price'></td></tr>");
       items.push('</table>');
-      items.unshift(`<div id="total-expenses">Total Expenses: <b>${totalExpenses}</b></div>`);
+      items.unshift(`<div id="info-bar"><div id="total-expenses">Total Expenses: <b>${totalExpenses}</b></div>
+       <div>Daily allowance: <b id="daily_allowance"></b></div></div>`);
       document.getElementById('expenses-table').innerHTML = items.join('');
       stopAnimatingLoading();
     }
+
+    getMonthlyLimit(apiKey);
   };
 
   xhr.onerror = function () {
@@ -123,7 +143,8 @@ function loadDropdown(apiKey) {
     } else {
       const items = [];
       const data = this.response.collections;
-      const ignoreItems = ['system_log', 'system_jobs', 'users', 'email_outbound', 'email_inbound', 'email_unsubscribed'];
+      const ignoreItems = ['system_log', 'system_jobs', 'users', 'email_outbound', 'email_inbound', 'email_unsubscribed',
+        'settings'];
       data.forEach((element) => {
         if (!ignoreItems.includes(element.name)) {
           items.push(`<a class="dropdown-item" href="javascript:getData('${apiKey}','${element.name}')">${element.name}</a>`);
